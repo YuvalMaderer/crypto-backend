@@ -1,24 +1,37 @@
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
-dotenv.config(); // Load config
+dotenv.config();
 const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 const connectDB = require("./config/db");
 
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://crypto-frontend-cgc5uq495-yuvals-projects-a495a31c.vercel.app",
+];
+
 async function main() {
-  // Connect to database
   await connectDB();
 
-  // parse json body in request (for POST, PUT, PATCH requests)
   app.use(express.static("public"));
   app.use(express.json());
 
-  // allow CORS for local development (for production, you should configure it properly)
-  app.use(cors());
+  app.use(
+    cors({
+      origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS"));
+        }
+      },
+      credentials: true,
+    })
+  );
 
-  // Routes
+  //  Routes
   app.use("/api/auth", require("./routes/auth.routes"));
   app.use("/api/user", require("./routes/user.routes"));
   app.use("/api/feedback", require("./routes/feedback.routes"));
