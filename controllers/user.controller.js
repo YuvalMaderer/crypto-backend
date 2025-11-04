@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 exports.savePreferences = async (req, res) => {
   try {
-    const userId = req.user;
+    const userId = req.userId;
     const { cryptoAssets, investorType, contentTypes } = req.body;
 
     const user = await User.findByIdAndUpdate(
