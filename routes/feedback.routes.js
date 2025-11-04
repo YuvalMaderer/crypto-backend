@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const auth = require("../middleware/auth");
+const verifyToken = require("../middleware/auth");
 const { submitFeedback } = require("../controllers/feedback.controller");
 
-router.post("/", auth, submitFeedback);
+router.post("/", verifyToken, submitFeedback);
 
 module.exports = router;
