@@ -16,15 +16,19 @@ const allowedOrigins = [
 async function main() {
   await connectDB();
 
-  app.use(express.static("public"));
-  app.use(express.json());
-
   app.use(
     cors({
       origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
+        if (!origin) {
+          console.log("No origin (mobile/curl) - allowed");
+          return callback(null, true);
+        }
+
+        if (allowedOrigins.includes(origin)) {
+          console.log("CORS allowed:", origin);
           callback(null, true);
         } else {
+          console.log("CORS blocked:", origin);
           callback(new Error("Not allowed by CORS"));
         }
       },
@@ -32,13 +36,21 @@ async function main() {
     })
   );
 
-  //  Routes
+  app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+  });
+
+  app.use(express.json());
+
+  app.use(express.static("public"));
+
   app.use("/api/auth", require("./routes/auth.routes"));
   app.use("/api/user", require("./routes/user.routes"));
   app.use("/api/feedback", require("./routes/feedback.routes"));
 
   app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`✅ Server is running on port ${PORT}`);
   });
 }
 
