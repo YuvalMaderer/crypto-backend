@@ -10,6 +10,7 @@ const connectDB = require("./config/db");
 const allowedOrigins = [
   "http://localhost:5173",
   "https://crypto-frontend-cgc5uq495-yuvals-projects-a495a31c.vercel.app",
+  "https://crypto-frontend-blush.vercel.app",
 ];
 
 async function main() {
